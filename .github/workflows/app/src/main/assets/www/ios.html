@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>二次元图库 · 简洁通透</title>
+<style>
+  :root{
+    --text:#35304a;
+    --text-muted:#8e8aa8;
+    --glass:rgba(255,255,255,.68);
+    --glass-strong:rgba(255,255,255,.86);
+    --border:rgba(255,255,255,.9);
+    --accent:#ff8ec4;
+    --accent-2:#a78bfa;
+    --accent-3:#67d7f7;
+    --shadow:0 8px 24px rgba(160,140,220,.14);
+    --shadow-lg:0 14px 40px rgba(160,140,220,.18);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; margin:0; }
+  body{
+    background:
+      radial-gradient(760px 540px at 8% -8%, rgba(255,196,232,.55), transparent 62%),
+      radial-gradient(760px 540px at 98% 6%, rgba(190,200,255,.55), transparent 62%),
+      radial-gradient(820px 620px at 50% 108%, rgba(190,240,255,.55), transparent 62%),
+      linear-gradient(158deg, #fdf8ff 0%, #f2f5ff 48%, #e9f9ff 100%);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family: system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    display:flex; flex-direction:column; overflow:hidden;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  /* ============ 顶栏 ============ */
+  header{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    padding:14px 20px 10px;
+    z-index:20;
+  }
+  .brand{
+    font-size:17px; font-weight:800; letter-spacing:.5px; white-space:nowrap;
+    background:linear-gradient(100deg,#ff8ec4,#a78bfa 60%,#67d7f7);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* 模式切换 */
+  .mode-switch{
+    display:inline-flex; padding:4px; border-radius:999px;
+    background:rgba(255,255,255,.6);
+    border:1px solid rgba(255,255,255,.95);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(14px);
+    white-space:nowrap;
+  }
+  .mode-switch button{
+    border:0; background:none; cursor:pointer; font-family:inherit;
+    padding:7px 16px; border-radius:999px;
+    font-size:13px; font-weight:600; color:var(--text-muted);
+    transition:all .24s ease;
+  }
+  .mode-switch button.active{
+    background:linear-gradient(135deg,#ff8ec4,#a78bfa);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(255,142,196,.4);
+  }
+
+  /* 搜索栏 */
+  .searchbar{
+    margin-left:auto;
+    display:flex; align-items:center; gap:6px;
+    background:rgba(255,255,255,.66);
+    border:1px solid rgba(255,255,255,.95);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(14px);
+    border-radius:999px;
+    padding:5px 6px 5px 16px;
+    flex:1; max-width:360px; min-width:160px;
+    transition:box-shadow .2s;
+  }
+  .searchbar:focus-within{ box-shadow:0 8px 24px rgba(255,142,196,.28); }
+  .searchbar input{
+    flex:1; min-width:0; background:none; border:0; outline:0;
+    color:var(--text); font-size:13.5px; font-family:inherit;
+  }
+  .searchbar input::placeholder{ color:var(--text-muted); }
+  .searchbar .go{
+    border:0; cursor:pointer; font-family:inherit;
+    background:linear-gradient(135deg,#ff8ec4,#a78bfa);
+    color:#fff; font-size:13px; font-weight:600;
+    padding:8px 16px; border-radius:999px;
+    box-shadow:0 4px 14px rgba(255,142,196,.38);
+    transition:filter .2s, transform .15s;
+  }
+  .searchbar .go:hover{ filter:brightness(1.06); }
+  .searchbar .go:active{ transform:scale(.96); }
+
+  .icon-btn{
+    position:relative; border:1px solid rgba(255,255,255,.95);
+    background:rgba(255,255,255,.66);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(14px);
+    color:#ff6fa8;
+    width:42px; height:42px; border-radius:50%;
+    cursor:pointer; font-size:17px;
+    display:grid; place-items:center;
+    transition:all .2s;
+  }
+  .icon-btn:hover{ background:rgba(255,255,255,.92); transform:translateY(-1px); }
+  .icon-btn .badge{
+    position:absolute; top:-5px; right:-5px;
+    background:linear-gradient(135deg,#ff8ec4,#a78bfa);
+    color:#fff; font-size:10px; line-height:1; font-weight:700;
+    padding:3px 6px; border-radius:999px;
+    box-shadow:0 3px 8px rgba(255,142,196,.5);
+  }
+
+  /* ============ 标签栏 ============ */
+  .tagbar{
+    display:flex; gap:8px; align-items:center; flex-wrap:nowrap;
+    padding:6px 20px 10px;
+    overflow-x:auto; scrollbar-width:none;
+  }
+  .tagbar::-webkit-scrollbar{ display:none; }
+
+  .tag-btn{
+    border:1px solid rgba(255,255,255,.95);
+    background:rgba(255,255,255,.6);
+    backdrop-filter:blur(14px);
+    box-shadow:var(--shadow);
+    color:var(--text-muted);
+    padding:7px 16px; border-radius:999px;
+    font-size:13px; font-family:inherit; font-weight:500;
+    cursor:pointer; white-space:nowrap;
+    transition:all .22s ease;
+  }
+  .tag-btn:hover{ background:rgba(255,255,255,.9); color:var(--text); }
+  .tag-btn.active{
+    background:linear-gradient(135deg,#ffe4f3,#e8e2ff);
+    color:#8b5cf6; font-weight:700;
+    border-color:rgba(167,139,250,.55);
+    box-shadow:0 6px 18px rgba(167,139,250,.26);
+  }
+
+  .year-tag{
+    margin-left:auto;
+    font-size:11px; font-weight:700; letter-spacing:.4px;
+    color:#0ea5a5;
+    background:linear-gradient(135deg,#d9fbf5,#d3f0ff);
+    border:1px solid rgba(92,225,185,.55);
+    padding:5px 12px; border-radius:999px; white-space:nowrap;
+    box-shadow:0 4px 12px rgba(92,225,185,.2);
+  }
+
+  /* ============ 图片舞台 ============ */
+  main{ flex:1; min-height:0; display:flex; padding:0 20px 12px; }
+
+  .stage{
+    position:relative;
+    flex:1; min-height:0;
+    display:flex; align-items:center; justify-content:center;
+    padding:14px;
+    border-radius:22px;
+    background:rgba(255,255,255,.42);
+    border:1px solid rgba(255,255,255,.85);
+    box-shadow:var(--shadow-lg);
+    backdrop-filter:blur(22px) saturate(1.4);
+    overflow:hidden;
+  }
+
+  #mainImage{
+    max-width:100%; max-height:100%;
+    border-radius:14px;
+    box-shadow:0 12px 40px rgba(120,100,180,.22);
+    opacity:0;
+    transition:opacity .38s ease;
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+  #mainImage.ready{ opacity:1; }
+
+  .spinner{
+    position:absolute;
+    width:36px; height:36px;
+    border:3px solid rgba(167,139,250,.18);
+    border-top-color:#ff8ec4;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+    opacity:0; pointer-events:none;
+    transition:opacity .2s;
+  }
+  .spinner.show{ opacity:1; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .meta{
+    position:absolute;
+    left:50%; bottom:12px; transform:translateX(-50%);
+    font-size:12px; color:var(--text-muted);
+    background:rgba(255,255,255,.82);
+    border:1px solid rgba(255,255,255,.95);
+    backdrop-filter:blur(12px);
+    padding:6px 14px; border-radius:999px;
+    white-space:nowrap;
+    max-width:90%;
+    overflow:hidden; text-overflow:ellipsis;
+    pointer-events:none;
+    box-shadow:0 6px 18px rgba(160,140,220,.14);
+  }
+  .meta .year{ color:#0ea5a5; font-weight:700; }
+
+  /* ============ 工具栏（6 个功能） ============ */
+  .toolbar{
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+    padding:10px 20px calc(18px + env(safe-area-inset-bottom));
+    z-index:20;
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:7px;
+    padding:11px 20px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.95);
+    background:rgba(255,255,255,.7);
+    backdrop-filter:blur(14px);
+    color:var(--text);
+    font-size:13.5px; font-family:inherit; font-weight:600;
+    cursor:pointer;
+    transition:all .2s ease;
+    box-shadow:var(--shadow);
+    white-space:nowrap;
+  }
+  .btn:hover{ background:rgba(255,255,255,.95); transform:translateY(-2px); box-shadow:0 12px 28px rgba(160,140,220,.2); }
+  .btn:active{ transform:translateY(0) scale(.97); }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+
+  .btn.on{
+    color:#fff;
+    background:linear-gradient(135deg,#ff8ec4,#a78bfa);
+    border-color:transparent;
+    box-shadow:0 8px 22px rgba(255,142,196,.4);
+  }
+  .btn.spin .ico{ display:inline-block; animation:spin .8s linear infinite; }
+
+  /* ============ 收藏抽屉 ============ */
+  .drawer{
+    position:fixed; top:0; right:0;
+    height:100%; width:min(340px,88vw);
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(26px) saturate(1.6);
+    border-left:1px solid rgba(255,255,255,.9);
+    box-shadow:-12px 0 40px rgba(160,140,220,.18);
+    transform:translateX(101%);
+    transition:transform .32s cubic-bezier(.4,0,.2,1);
+    display:flex; flex-direction:column;
+    z-index:60;
+  }
+  .drawer.open{ transform:translateX(0); }
+
+  .drawer-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 20px;
+    border-bottom:1px solid rgba(167,139,250,.16);
+    font-size:14px; font-weight:700; color:var(--text);
+  }
+  .drawer-head b{ color:#8b5cf6; }
+
+  .fav-list{
+    flex:1; overflow-y:auto;
+    padding:12px; display:flex; flex-direction:column; gap:10px;
+  }
+  .fav-list .empty{
+    color:var(--text-muted); font-size:13px;
+    text-align:center; margin-top:50px; line-height:2;
+  }
+
+  .fav-item{
+    display:flex; align-items:center; gap:11px;
+    padding:9px;
+    border-radius:14px;
+    background:rgba(255,255,255,.7);
+    border:1px solid rgba(255,255,255,.95);
+    cursor:pointer;
+    transition:all .2s;
+    box-shadow:0 4px 14px rgba(160,140,220,.1);
+  }
+  .fav-item:hover{ background:#fff; transform:translateY(-1px); box-shadow:0 8px 22px rgba(160,140,220,.18); }
+
+  .fav-item img{
+    width:56px; height:56px; flex:0 0 56px;
+    object-fit:cover; border-radius:10px;
+    background:rgba(167,139,250,.1);
+  }
+
+  .fav-info{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
+  .fav-info span{ font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text); }
+  .fav-info small{ font-size:11px; color:var(--text-muted); }
+
+  .fav-item .del{
+    border:0; background:none; color:var(--text-muted);
+    cursor:pointer; font-size:14px; line-height:1;
+    padding:8px; border-radius:8px; transition:.15s;
+  }
+  .fav-item .del:hover{ color:#ff5c8a; background:rgba(255,92,138,.1); }
+
+  .drawer-foot{
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+    border-top:1px solid rgba(167,139,250,.16);
+  }
+  .drawer-foot .btn{ width:100%; justify-content:center; }
+
+  /* ============ Toast ============ */
+  .toast{
+    position:fixed;
+    left:50%; bottom:110px;
+    transform:translate(-50%,16px);
+    background:rgba(58,53,80,.94);
+    backdrop-filter:blur(14px);
+    color:#fff;
+    font-size:13px;
+    padding:12px 22px; border-radius:16px;
+    opacity:0; pointer-events:none;
+    transition:.28s ease;
+    z-index:90;
+    box-shadow:0 14px 40px rgba(80,60,140,.35);
+    max-width:86vw; text-align:center;
+    white-space:pre-line; line-height:1.75;
+  }
+  .toast.show{ opacity:1; transform:translate(-50%,0); }
+
+  /* ============ 响应式 ============ */
+  @media (max-width:640px){
+    header{ padding:12px 14px 8px; gap:10px; }
+    .brand{ font-size:15px; }
+    .mode-switch button{ padding:6px 13px; font-size:12.5px; }
+    .searchbar{ order:5; flex:1 1 100%; max-width:none; margin-left:0; min-width:0; }
+    .icon-btn{ width:40px; height:40px; font-size:16px; }
+    .tagbar{ padding:4px 14px 8px; }
+    .tag-btn{ padding:6px 14px; font-size:12.5px; }
+    main{ padding:0 14px 10px; }
+    .stage{ padding:10px; border-radius:18px; }
+    .toolbar{ gap:8px; padding:8px 12px calc(14px + env(safe-area-inset-bottom)); }
+    .btn{ padding:9px 14px; font-size:12.5px; gap:5px; border-radius:12px; }
+    .meta{ font-size:11px; padding:5px 11px; bottom:8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">✦ 二次元图库</div>
+
+  <div class="mode-switch" id="modeSwitch">
+    <button data-mode="pure" class="active">纯洁</button>
+    <button data-mode="ecchi">涩图</button>
+  </div>
+
+  <div class="searchbar">
+    <input id="searchInput" type="text"
+           placeholder="搜索角色 / 标签，如 初音ミク、Saber"
+           autocomplete="off" spellcheck="false">
+    <button class="go" id="searchGo">搜索</button>
+  </div>
+
+  <button class="icon-btn" id="drawerOpen" title="我的收藏">
+    ♥<span class="badge" id="favCount">0</span>
+  </button>
+</header>
+
+<div class="tagbar" id="tagBar">
+  <button class="tag-btn active" data-type="all">全部</button>
+  <button class="tag-btn" data-type="loli">萝莉</button>
+  <button class="tag-btn" data-type="girl">少女</button>
+  <button class="tag-btn" data-type="mature">御姐</button>
+  <span class="year-tag" id="yearTag">2018 – 2026</span>
+</div>
+
+<main>
+  <div class="stage">
+    <img id="mainImage" alt="二次元图片">
+    <div class="spinner" id="spinner"></div>
+    <div class="meta" id="meta"></div>
+  </div>
+</main>
+
+<div class="toolbar">
+  <button class="btn" data-act="prev">◀ 上一个</button>
+  <button class="btn" data-act="next">下一个 ▶</button>
+  <button class="btn" data-act="fav" id="favBtn">♡ 收藏</button>
+  <button class="btn" data-act="download">⭳ 下载</button>
+  <button class="btn" data-act="refresh" id="refreshBtn"><span class="ico">⟳</span> 刷新</button>
+  <button class="btn" data-act="search">🔍 搜索</button>
+</div>
+
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span>我的收藏 · <b id="drawerCount">0</b></span>
+    <button class="icon-btn" id="drawerClose" style="width:34px;height:34px;font-size:14px">✕</button>
+  </div>
+  <div class="fav-list" id="favList"></div>
+  <div class="drawer-foot">
+    <button class="btn" id="clearFavs">清空收藏</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =========================================================
+   *  配置
+   * ========================================================= */
+  const PAGE_SIZE   = 20;
+  const FAV_KEY     = 'anime_gallery_favs_v2';
+  const TIMEOUT     = 6000;
+  const MIN_YEAR    = 2018;
+  const MAX_YEAR    = 2026;
+  const DATE_AFTER  = MIN_YEAR + '-01-01';
+  const DATE_BEFORE = MAX_YEAR + '-12-31';
+
+  /* ---------- 人物类型 → 标签池 ---------- */
+  const TYPE_TAGS = {
+    all:    [],
+    loli:   ['萝莉', 'loli', 'ロリ', 'lolita'],
+    girl:   ['少女', 'girl', '女の子', 'shoujo'],
+    mature: ['御姐', 'お姉さん', 'oneesan', 'mature_female']
+  };
+
+  /* ---------- 涩图模式标签池（大尺度，但 R18=0） ---------- */
+  const ECCHI_TAGS = [
+    '水着', 'bikini', 'swimsuit', '下着', 'lingerie',
+    'パンツ', 'ecchi', '魅惑のふともも', '谷間', 'cleavage',
+    '胸チラ', 'おへそ', '微乳', 'graphig'
+  ];
+
+  /* ---------- 纯净模式默认标签（随机组合，保证有图） ---------- */
+  const PURE_TAGS = ['waifu', 'neko', 'かわいい', 'kawaii', '制服', 'セーラー服'];
+
+  /* =========================================================
+   *  API 图源（JSON 模式）
+   * ========================================================= */
+  const API_SOURCES = [
+    /* 1. lolicon —— 支持日期、tag、keyword，主力源 */
+    {
+      name: 'lolicon',
+      async load(ctx) {
+        const { query, tags } = ctx;
+
+        // 尝试 1：全部 tags（AND）
+        let items = await requestLolicon(query, tags);
+        if (items.length) return items;
+
+        // 尝试 2：逐个 tag 单独试
+        for (const t of tags) {
+          items = await requestLolicon(query, [t]);
+          if (items.length) return items;
+        }
+
+        // 尝试 3：无 tag，随机纯净标签
+        const fallback = [PURE_TAGS[Math.floor(Math.random() * PURE_TAGS.length)]];
+        items = await requestLolicon(query, fallback);
+        return items;
+      }
+    },
+
+    /* 2. nekos.best —— 无日期字段，做兜底 */
+    {
+      name: 'nekos.best',
+      async load({ query, tag }) {
+        const url = query
+          ? 'https://nekos.best/api/v2/search?query=' + encodeURIComponent(query) + '&amount=' + PAGE_SIZE
+          : 'https://nekos.best/api/v2/' + encodeURIComponent(tag || 'neko') + '?amount=' + PAGE_SIZE;
+        const res = await fetchT(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        return (data.results || []).map(r => ({
+          url: r.url, artist: r.artist_name || '',
+          source: r.source_url || '', date: 0
+        }));
+      }
+    },
+
+    /* 3. waifu.im */
+    {
+      name: 'waifu.im',
+      async load({ query }) {
+        const tags = query ? 'included_tags=' + encodeURIComponent(query) : 'included_tags=waifu';
+        const res = await fetchT('https://api.waifu.im/search?' + tags + '&is_nsfw=false&limit=' + PAGE_SIZE);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        return (data.images || []).map(i => ({
+          url: i.url, artist: '', source: i.source || '', date: 0
+        }));
+      }
+    }
+  ];
+
+  /* 单次 lolicon 请求 */
+  async function requestLolicon(query, tags) {
+    const params = new URLSearchParams();
+    params.set('num', String(PAGE_SIZE));
+    params.set('r18', '0');
+    params.set('excludeAI', 'true');
+    params.set('size', 'regular');
+    params.set('dateAfter', DATE_AFTER);
+    params.set('dateBefore', DATE_BEFORE);
+
+    // 搜索词（角色 / 标签全网搜索）
+    if (query) params.set('keyword', query);
+
+    // 标签（多个以 AND 逻辑）
+    tags.forEach(t => params.append('tag', t));
+
+    const res = await fetchT('https://api.lolicon.app/setu/v2?' + params.toString());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    return (data.data || []).map(i => ({
+      url: (i.urls && (i.urls.regular || i.urls.original)) || '',
+      artist: i.author || '',
+      source: i.pid ? 'https://www.pixiv.net/artworks/' + i.pid : '',
+      date: i.uploadDate || 0
+    })).filter(x => x.url && inYearRange(x.date));
+  }
+
+  /* 年份校验 */
+  function inYearRange(ts) {
+    if (!ts) return true;
+    const y = new Date(ts).getFullYear();
+    return y >= MIN_YEAR && y <= MAX_YEAR;
+  }
+
+  /* =========================================================
+   *  直链模式（<img> 直接加载，不受 CORS 限制）
+   * ========================================================= */
+  const DIRECT_SOURCES = [
+    {
+      name: 'lolicon直链',
+      build(ctx) {
+        const { query, tags } = ctx;
+        let u = 'https://api.lolicon.app/setu/v2?format=image' +
+                '&r18=0&size=regular&excludeAI=true' +
+                '&dateAfter=' + DATE_AFTER + '&dateBefore=' + DATE_BEFORE;
+        if (query) u += '&keyword=' + encodeURIComponent(query);
+        tags.forEach(t => { u += '&tag=' + encodeURIComponent(t); });
+        return u + '&_=' + Date.now();
+      }
+    },
+    { name: 'loliapi',  build: () => 'https://api.loliapi.com/acg/?_=' + Date.now() },
+    { name: 'paulzzh',  build: () => 'https://img.paulzzh.com/touhou/random?_=' + Date.now() },
+    { name: 'dujin',    build: () => 'https://api.dujin.org/pic/?_=' + Date.now() }
+  ];
+
+  /* =========================================================
+   *  工具
+   * ========================================================= */
+  function fetchT(url, opts = {}, ms = TIMEOUT) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(timer));
+  }
+  function isWeChat() { return /MicroMessenger/i.test(navigator.userAgent); }
+  function isMobile() { return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent); }
+
+  /* =========================================================
+   *  DOM
+   * ========================================================= */
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    img: $('mainImage'), spinner: $('spinner'), meta: $('meta'),
+    searchInput: $('searchInput'), searchGo: $('searchGo'),
+    favBtn: $('favBtn'), refreshBtn: $('refreshBtn'),
+    favCount: $('favCount'), drawer: $('drawer'),
+    drawerOpen: $('drawerOpen'), drawerClose: $('drawerClose'),
+    drawerCount: $('drawerCount'), favList: $('favList'),
+    clearFavs: $('clearFavs'), toast: $('toast'),
+    modeSwitch: $('modeSwitch'), tagBar: $('tagBar')
+  };
+
+  /* =========================================================
+   *  状态
+   * ========================================================= */
+  const state = {
+    dataMode: 'api',        // 'api' | 'direct'
+    viewMode: 'pure',       // 'pure' | 'ecchi'
+    personType: 'all',      // 'all' | 'loli' | 'girl' | 'mature'
+    pool: [],
+    index: 0,
+    query: '',
+    favorites: loadFavorites(),
+    loading: false,
+    apiBroken: false,
+    sourceName: '',
+    // 直链
+    directSourceIdx: 0,
+    directHistory: [],
+    directIndex: -1,
+    directTries: 0,
+    _corsRetried: false,
+    _errTries: 0
+  };
+
+  /* =========================================================
+   *  收藏持久化
+   * ========================================================= */
+  function loadFavorites() {
+    try {
+      const arr = JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function saveFavorites() {
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(state.favorites)); } catch (e) {}
+  }
+
+  /* =========================================================
+   *  标签计算
+   * ========================================================= */
+  function getFilterTags() {
+    const tags = [];
+
+    // 人物类型
+    const pool = TYPE_TAGS[state.personType] || [];
+    if (pool.length) tags.push(pool[Math.floor(Math.random() * pool.length)]);
+
+    // 涩图模式追加一个涩 tag
+    if (state.viewMode === 'ecchi') {
+      tags.push(ECCHI_TAGS[Math.floor(Math.random() * ECCHI_TAGS.length)]);
+    }
+
+    return tags;
+  }
+
+  /* =========================================================
+   *  数据加载：API
+   * ========================================================= */
+  async function fetchPool(ctx) {
+    const errors = [];
+    for (const src of API_SOURCES) {
+      try {
+        const items = await src.load(ctx);
+        if (items && items.length) {
+          items.forEach(it => { it._source = src.name; });
+          state.sourceName = src.name;
+          return items;
+        }
+        errors.push(src.name + ': 返回空');
+      } catch (e) {
+        const msg = e.name === 'AbortError' ? '超时' : (e.message || '失败');
+        errors.push(src.name + ': ' + msg);
+      }
+    }
+    throw new Error(errors.join('\n'));
+  }
+
+  /* =========================================================
+   *  数据加载：直链
+   * ========================================================= */
+  function loadDirect() {
+    state.directHistory = state.directHistory.slice(0, state.directIndex + 1);
+    const src = DIRECT_SOURCES[state.directSourceIdx % DIRECT_SOURCES.length];
+    state.directSourceIdx++;
+
+    const ctx = { query: state.query, tags: getFilterTags() };
+    const url = src.build(ctx);
+
+    state.directHistory.push({ url, name: src.name, tags: ctx.tags });
+    state.directIndex = state.directHistory.length - 1;
+    state.directTries = 0;
+
+    renderDirect();
+  }
+
+  function directNext() {
+    if (state.directIndex < state.directHistory.length - 1) {
+      state.directIndex++;
+      renderDirect();
+    } else {
+      loadDirect();
+    }
+  }
+  function directPrev() {
+    if (state.directIndex > 0) {
+      state.directIndex--;
+      renderDirect();
+    } else {
+      toast('已经是第一张了');
+    }
+  }
+
+  function renderDirect() {
+    const h = state.directHistory[state.directIndex];
+    if (!h) return;
+
+    els.img.classList.remove('ready');
+    els.spinner.classList.add('show');
+    els.img.removeAttribute('src');
+    setTimeout(() => {
+      els.img.src = h.url;
+      els.img.dataset.realSrc = h.url;
+    }, 30);
+
+    const parts = ['基础模式', '第 ' + (state.directIndex + 1) + ' 张', '源：' + h.name];
+    if (h.tags && h.tags.length) parts.push('标签：' + h.tags.join('+'));
+    els.meta.innerHTML = parts.join('   ·   ') +
+      '   ·   <span class="year">' + MIN_YEAR + '-' + MAX_YEAR + '</span>';
+
+    updateFavBtn();
+  }
+
+  /* =========================================================
+   *  渲染
+   * ========================================================= */
+  function current() {
+    if (state.dataMode === 'direct') {
+      const h = state.directHistory[state.directIndex];
+      if (!h) return null;
+      // ★ 关键：直链模式用浏览器实际加载到的地址（含 302 重定向后的最终地址）
+      const realUrl = els.img.currentSrc || els.img.src || h.url;
+      return {
+        url: realUrl,
+        rawUrl: h.url,
+        artist: '', source: '', date: 0,
+        _direct: true
+      };
+    }
+    return state.pool[state.index] || null;
+  }
+
+  function render() {
+    const item = current();
+    if (!item) {
+      els.img.classList.remove('ready');
+      els.img.removeAttribute('src');
+      els.meta.textContent = '';
+      updateFavBtn();
+      return;
+    }
+
+    if (els.img.getAttribute('src') !== item.url) {
+      els.img.classList.remove('ready');
+      els.spinner.classList.add('show');
+      els.img.src = item.url;
+    } else {
+      els.img.classList.add('ready');
+      els.spinner.classList.remove('show');
+    }
+
+    const parts = [(state.index + 1) + ' / ' + state.pool.length];
+    if (item.artist) parts.push('画师：' + item.artist);
+    if (state.sourceName) parts.push('源：' + state.sourceName);
+
+    let yearHtml = '<span class="year">' + MIN_YEAR + '-' + MAX_YEAR + '</span>';
+    if (item.date) {
+      yearHtml = '<span class="year">' + new Date(item.date).getFullYear() + '年</span>';
+    }
+    els.meta.innerHTML = parts.join('   ·   ') + '   ·   ' + yearHtml;
+
+    updateFavBtn();
+    preload(state.index + 1);
+    preload(state.index - 1);
+  }
+
+  function preload(i) {
+    if (state.pool.length < 2) return;
+    const item = state.pool[(i + state.pool.length) % state.pool.length];
+    if (!item) return;
+    const im = new Image();
+    im.decoding = 'async';
+    im.src = item.url;
+  }
+
+  /* =========================================================
+   *  导航
+   * ========================================================= */
+  function go(delta) {
+    if (state.dataMode === 'direct') {
+      if (delta < 0) directPrev(); else directNext();
+      return;
+    }
+    if (!state.pool.length) return;
+    state.index = (state.index + delta + state.pool.length) % state.pool.length;
+    render();
+  }
+
+  /* =========================================================
+   *  收藏
+   * ========================================================= */
+  function toggleFav() {
+    const item = current();
+    if (!item) { toast('还没有图片'); return; }
+    const url = item.url;
+    if (!url) { toast('图片还没加载好，稍等'); return; }
+
+    const i = state.favorites.findIndex(f => f.url === url);
+    if (i >= 0) {
+      state.favorites.splice(i, 1);
+      toast('已取消收藏');
+    } else {
+      state.favorites.unshift({
+        url,
+        artist: item.artist || '',
+        source: item.source || '',
+        date: item.date || 0,
+        added: Date.now()
+      });
+      toast('已加入收藏 ♥');
+    }
+    saveFavorites();
+    updateFavBtn();
+    renderFavList();
+  }
+
+  function updateFavBtn() {
+    const item = current();
+    const url = item ? item.url : '';
+    const isFav = !!url && state.favorites.some(f => f.url === url);
+    els.favBtn.classList.toggle('on', isFav);
+    els.favBtn.textContent = isFav ? '♥ 已收藏' : '♡ 收藏';
+  }
+
+  /* =========================================================
+   *  下载（已修复：看到的 = 下载的）
+   * ========================================================= */
+  function filenameOf(url) {
+    try {
+      const u = new URL(url);
+      let name = u.pathname.split('/').pop() || 'image';
+      name = name.split('?')[0];
+      if (!/\.(png|jpe?g|gif|webp|avif)$/i.test(name)) name += '.png';
+      return name || 'image.png';
+    } catch (e) { return 'image.png'; }
+  }
+
+  function triggerDownload(blob, filename) {
+    const objUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(objUrl), 3000);
+  }
+
+  async function download() {
+    const item = current();
+    if (!item || !item.url) { toast('还没有图片'); return; }
+
+    // ★ 修复核心：直链模式必须使用 img.currentSrc（浏览器解析 302 后的真实地址）
+    //   不再使用 history 中记录的原始随机 URL，否则重新请求会拿到另一张图
+    let realUrl = item.url;
+    if (state.dataMode === 'direct') {
+      realUrl = els.img.currentSrc || els.img.src || item.url;
+    }
+
+    const filename = filenameOf(realUrl);
+
+    // 移动端：直接打开原图，长按保存最稳
+    if (isMobile()) {
+      window.open(realUrl, '_blank', 'noopener');
+      toast('已打开原图\n长按图片即可保存');
+      return;
+    }
+
+    toast('正在下载…');
+
+    // 方案 1：fetch → blob（拿到和当前显示的完全一致的图片）
+    try {
+      const res = await fetchT(realUrl, { mode: 'cors' }, 20000);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const blob = await res.blob();
+      if (!blob.type.startsWith('image/')) throw new Error('不是图片');
+      triggerDownload(blob, filename);
+      toast('已开始下载 ✓');
+      return;
+    } catch (e) {
+      console.warn('fetch 下载失败：', e);
+    }
+
+    // 方案 2：canvas 导出（对已经显示的图片导出，绝对不会错）
+    try {
+      const img = els.img;
+      if (img.naturalWidth > 0) {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        c.toBlob(blob => {
+          if (blob) {
+            triggerDownload(blob, filename);
+            toast('已开始下载 ✓');
+          } else {
+            window.open(realUrl, '_blank', 'noopener');
+            toast('已在新标签页打开，请右键另存为');
+          }
+        }, 'image/png');
+        return;
+      }
+    } catch (e) {
+      console.warn('canvas 下载失败：', e);
+    }
+
+    // 方案 3：打开原图
+    window.open(realUrl, '_blank', 'noopener');
+    toast('已在新标签页打开，请右键另存为');
+  }
+
+  /* =========================================================
+   *  刷新
+   * ========================================================= */
+  async function refresh() {
+    if (state.loading) return;
+    state.loading = true;
+    els.refreshBtn.classList.add('spin');
+    els.refreshBtn.disabled = true;
+    els.spinner.classList.add('show');
+
+    try {
+      if (!state.apiBroken || state.query) {
+        try {
+          const tags = getFilterTags();
+          const items = await fetchPool({ query: state.query, tags, tag: 'neko' });
+          if (items.length) {
+            state.dataMode = 'api';
+            state.apiBroken = false;
+            state.pool = items;
+            state.index = 0;
+            els.spinner.classList.remove('show');
+            render();
+            return;
+          }
+        } catch (err) {
+          state.apiBroken = true;
+          console.warn('API 模式失败：\n' + err.message);
+        }
+      }
+
+      // 直链兜底
+      state.dataMode = 'direct';
+      if (state.query && state.directHistory.length === 0) {
+        state.directHistory = [];
+        state.directIndex = -1;
+        state.directSourceIdx = 0;
+      }
+      loadDirect();
+
+      if (isWeChat()) {
+        toast('检测到微信环境\n接口可能被限制，已切换到基础模式\n\n如需完整功能请点右上角 → 在浏览器打开');
+      } else if (state.apiBroken) {
+        toast('图片接口暂时无法访问\n已切换到基础直链模式');
+      }
+    } finally {
+      state.loading = false;
+      els.refreshBtn.classList.remove('spin');
+      els.refreshBtn.disabled = false;
+    }
+  }
+
+  /* =========================================================
+   *  搜索
+   * ========================================================= */
+  function doSearch() {
+    state.query = els.searchInput.value.trim();
+    state.apiBroken = false;
+    state.directHistory = [];
+    state.directIndex = -1;
+    state.directSourceIdx = 0;
+    refresh();
+  }
+
+  /* =========================================================
+   *  收藏抽屉
+   * ========================================================= */
+  function renderFavList() {
+    const list = state.favorites;
+    els.favCount.textContent = list.length;
+    els.drawerCount.textContent = list.length;
+    els.favList.innerHTML = '';
+
+    if (!list.length) {
+      const p = document.createElement('p');
+      p.className = 'empty';
+      p.textContent = '还没有收藏\n点「收藏」按钮把喜欢的加进来吧 ♡';
+      els.favList.appendChild(p);
+      return;
+    }
+
+    list.forEach(f => {
+      const row = document.createElement('div');
+      row.className = 'fav-item';
+
+      const img = document.createElement('img');
+      img.src = f.url; img.loading = 'lazy'; img.alt = '';
+      img.addEventListener('error', () => { img.style.opacity = .3; });
+
+      const info = document.createElement('div');
+      info.className = 'fav-info';
+      const name = document.createElement('span');
+      name.textContent = f.artist || '未知画师';
+      const date = document.createElement('small');
+      const year = f.date ? new Date(f.date).getFullYear() + '年 · ' : '';
+      date.textContent = year + new Date(f.added || Date.now()).toLocaleDateString();
+      info.append(name, date);
+
+      const del = document.createElement('button');
+      del.className = 'del'; del.title = '移除'; del.textContent = '✕';
+      del.addEventListener('click', e => {
+        e.stopPropagation();
+        state.favorites = state.favorites.filter(x => x.url !== f.url);
+        saveFavorites(); renderFavList(); updateFavBtn();
+      });
+
+      row.append(img, info, del);
+
+      const open = () => {
+        state.dataMode = 'api';
+        state.pool = [f, ...state.favorites.filter(x => x.url !== f.url)];
+        state.index = 0;
+        state.sourceName = '收藏';
+        render();
+        closeDrawer();
+      };
+      img.addEventListener('click', open);
+      info.addEventListener('click', open);
+
+      els.favList.appendChild(row);
+    });
+  }
+
+  function openDrawer()  { els.drawer.classList.add('open'); }
+  function closeDrawer() { els.drawer.classList.remove('open'); }
+
+  /* =========================================================
+   *  Toast
+   * ========================================================= */
+  let toastTimer = null;
+  function toast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 3000);
+  }
+
+  /* =========================================================
+   *  事件
+   * ========================================================= */
+  els.img.addEventListener('load', () => {
+    els.img.classList.add('ready');
+    els.spinner.classList.remove('show');
+    state.directTries = 0;
+    state._errTries = 0;
+    state._corsRetried = false;
+    updateFavBtn();
+  });
+
+  els.img.addEventListener('error', () => {
+    els.spinner.classList.remove('show');
+
+    // CORS 重试（不影响显示，只是尝试恢复）
+    if (!state._corsRetried && els.img.hasAttribute('crossorigin')) {
+      state._corsRetried = true;
+      const src = els.img.getAttribute('src');
+      els.img.removeAttribute('crossorigin');
+      els.img.src = '';
+      setTimeout(() => { els.img.src = src; }, 20);
+      return;
+    }
+
+    if (state.dataMode === 'direct') {
+      if (state.directTries < 3) {
+        state.directTries++;
+        loadDirect();
+        return;
+      }
+      state.directTries = 0;
+      toast('图片加载失败，请点刷新重试');
+      return;
+    }
+
+    if (state.pool.length > 1) {
+      state._errTries++;
+      if (state._errTries <= 3) {
+        state.index = (state.index + 1) % state.pool.length;
+        render();
+        return;
+      }
+    }
+    state._errTries = 0;
+    toast('图片加载失败，请刷新');
+  });
+
+  /* 六个功能按钮 */
+  document.querySelectorAll('[data-act]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switch (btn.dataset.act) {
+        case 'prev':     go(-1);      break;
+        case 'next':     go(1);       break;
+        case 'fav':      toggleFav(); break;
+        case 'download': download();  break;
+        case 'refresh':  refresh();   break;
+        case 'search':   els.searchInput.focus(); els.searchInput.select(); break;
+      }
+    });
+  });
+
+  /* 模式切换 */
+  els.modeSwitch.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-mode]');
+    if (!btn || btn.classList.contains('active')) return;
+    els.modeSwitch.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.viewMode = btn.dataset.mode;
+    refresh();
+  });
+
+  /* 人物类型切换 */
+  els.tagBar.addEventListener('click', e => {
+    const btn = e.target.closest('.tag-btn');
+    if (!btn || btn.classList.contains('active')) return;
+    els.tagBar.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.personType = btn.dataset.type;
+    refresh();
+  });
+
+  /* 搜索 */
+  els.searchGo.addEventListener('click', doSearch);
+  els.searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+
+  /* 抽屉 */
+  els.drawerOpen.addEventListener('click', openDrawer);
+  els.drawerClose.addEventListener('click', closeDrawer);
+
+  els.clearFavs.addEventListener('click', () => {
+    if (!state.favorites.length) { toast('收藏夹已经是空的'); return; }
+    if (confirm('确定要清空全部收藏吗？')) {
+      state.favorites = [];
+      saveFavorites(); renderFavList(); updateFavBtn();
+      toast('已清空收藏');
+    }
+  });
+
+  /* 键盘快捷键 */
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    switch (e.key) {
+      case 'ArrowLeft':  go(-1); break;
+      case 'ArrowRight': go(1);  break;
+      case 'Escape':     closeDrawer(); break;
+      default:
+        const k = e.key.toLowerCase();
+        if (k === 'f') toggleFav();
+        if (k === 'd') download();
+        if (k === 'r') refresh();
+    }
+  });
+
+  /* =========================================================
+   *  启动
+   * ========================================================= */
+  renderFavList();
+  updateFavBtn();
+  refresh();
+})();
+</script>
+</body>
+</html>
